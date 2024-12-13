@@ -443,6 +443,9 @@ static void kgsl_mem_entry_detach_process(struct kgsl_mem_entry *entry)
 	type = kgsl_memdesc_usermem_type(&entry->memdesc);
 	entry->priv->stats[type].cur -= entry->memdesc.size;
 
+	if (type != KGSL_MEM_ENTRY_ION)
+		entry->priv->gpumem_mapped -= entry->memdesc.mapsize;
+
 	spin_unlock(&entry->priv->mem_lock);
 
 	kgsl_mmu_put_gpuaddr(&entry->memdesc);
@@ -524,7 +527,7 @@ int kgsl_context_init(struct kgsl_device_private *dev_priv,
 	if (atomic_read(&proc_priv->ctxt_count) > KGSL_MAX_CONTEXTS_PER_PROC) {
 		KGSL_DRV_ERR_RATELIMIT(device,
 			"Per process context limit reached for pid %u",
-			pid_nr(dev_priv->process_priv->pid));
+			dev_priv->process_priv->pid);
 		spin_unlock(&proc_priv->ctxt_count_lock);
 		return -ENOSPC;
 	}

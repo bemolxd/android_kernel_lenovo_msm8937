@@ -1144,9 +1144,13 @@ static int bmi160_report_gyro_data(struct iio_dev *indio_dev,
 #endif
 
 	store_gyro_boot_sample(gyro.x, gyro.y, gyro.z);
+<<<<<<< HEAD
 	mutex_lock(&indio_dev->mlock);
 	iio_push_to_buffers(indio_dev, buf_16);
 	mutex_unlock(&indio_dev->mlock);
+=======
+	iio_push_to_buffers(indio_dev, buf_16);
+>>>>>>> android-linux-stable/kernel.lnx.3.18.r34-rel
 
 	return 0;
 }
